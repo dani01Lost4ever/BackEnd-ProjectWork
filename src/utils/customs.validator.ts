@@ -19,11 +19,7 @@
 //     return `The User does not exist`;
 //   }
 // }
-import {
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-  ValidationArguments,
-} from "class-validator";
+import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from "class-validator";
 import { User } from "../api/users/user.model";
 import mongoose from "mongoose";
 
