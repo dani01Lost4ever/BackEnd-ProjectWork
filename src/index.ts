@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 require("dotenv").config();
 mongoose.set("debug", true);
 mongoose
-  .connect("")
+  .connect(process.env.MONGO_DB_URI)
   .then((_) => {
     console.log("Connected to db");
     app.listen(3000, () => {
