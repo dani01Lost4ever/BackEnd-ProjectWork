@@ -1,6 +1,6 @@
-import mongoose, { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { BankAccount as iBankAccount } from "./bank-account.entity";
-
+import { BankAccountService } from "./bank-account.service";
 export const BankAccountSchema = new Schema<iBankAccount>({
   firstName: String,
   lastName: String,
