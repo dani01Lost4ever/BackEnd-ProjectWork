@@ -1,13 +1,20 @@
-import mongoose, { Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { BankAccount as iBankAccount } from "./bank-account.entity";
-
+import { BankAccountService } from "./bank-account.service";
 export const BankAccountSchema = new Schema<iBankAccount>({
   firstName: String,
   lastName: String,
   picture: String,
-  balance: {type: Number, default:0 },
+  balance: { type: Number, default: 0 },
   date: Date,
   iban: String,
+});
+
+BankAccountSchema.pre("save", function (next: any) {
+  if (this.isNew) {
+    this.iban = BankAccountService.generateIBAN();
+  }
+  next();
 });
 
 BankAccountSchema.virtual("fullName").get(function () {
