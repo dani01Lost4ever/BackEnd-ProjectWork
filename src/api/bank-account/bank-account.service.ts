@@ -7,7 +7,7 @@ import { BankAccountExistsError } from "../../errors/bank-account-exist";
 export class BankAccountService {
   async add(
     user: BankAccount,
-  
+
     credentials: { username: string; password: string }
   ): Promise<BankAccount> {
     const existingIdentity = await BankAccountIdentityModel.findOne({
@@ -33,6 +33,17 @@ export class BankAccountService {
   async list() {
     const list = await BankAccountModel.find({});
     return list;
+  }
+
+  static generateIBAN() {
+    let iban: string[] = ["I", "T"];
+    let chars: string[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+    for (let i = 0; i < 15; i++) {
+      iban.push(chars[Math.floor(Math.random() * chars.length)]);
+    }
+
+    return iban.join("");
   }
 }
 export default new BankAccountService();
