@@ -1,4 +1,4 @@
-export interface movimenti{
+export interface transaction{
     id: string;
     bankaccountid: string;
     date: Date;
