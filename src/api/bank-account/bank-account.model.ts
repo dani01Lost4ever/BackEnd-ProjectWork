@@ -9,12 +9,6 @@ export const BankAccountSchema = new Schema<iBankAccount>({
   iban: String,
 });
 
-BankAccountSchema.pre("save", function (next: any) {
-  if (this.isNew) {
-    this.date = new Date();
-  }
-  next();
-});
 
 BankAccountSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
