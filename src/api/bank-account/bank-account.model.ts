@@ -5,17 +5,9 @@ export const BankAccountSchema = new Schema<iBankAccount>({
   firstName: String,
   lastName: String,
   picture: String,
-  balance: {type: Number, default:0 },
   date: Date,
   iban: String,
 });
-
-
-
-
-
-
-
 
 BankAccountSchema.pre("save", function (next: any) {
   if (this.isNew) {
