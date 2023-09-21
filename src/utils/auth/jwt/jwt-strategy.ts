@@ -1,6 +1,6 @@
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
-import { User as UserModel } from "../../../api/users/user.model";
+import { BankAccount as BankAccountModel } from "../../../api/bank-account/bank-account.model";
 
 export const JWT_SECRET = "secret";
 
@@ -13,9 +13,9 @@ passport.use(
     async (token, done) => {
       try {
         console.log(token);
-        const user = await UserModel.findById(token.id);
-        if (user) {
-          return done(null, user.toObject());
+        const bankaccount = await BankAccountModel.findById(token.id);
+        if (bankaccount) {
+          return done(null, bankaccount.toObject());
         } else {
           return done(null, false, { message: "invalid token" });
         }

@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
-import { UserIdentity as iUserIdentity } from "./user-identity.entity";
+import { BankAccountIdentity as iBankAccount } from "./user-identity.entity";
 
-export const userIdentitySchema = new mongoose.Schema<iUserIdentity>({
+export const bankAccountSchema = new mongoose.Schema<iBankAccount>({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   provider: { type: String, default: "local" },
   credentials: {
@@ -12,12 +12,12 @@ export const userIdentitySchema = new mongoose.Schema<iUserIdentity>({
   },
 });
 
-userIdentitySchema.pre("findOne", function (next) {
+bankAccountSchema.pre("findOne", function (next) {
   this.populate("user");
   next();
 });
 
-export const UserIdentity = model<iUserIdentity>(
+export const BankAccountIdentity = model<iBankAccount>(
   "UserIdentity",
-  userIdentitySchema
+  bankAccountSchema
 );

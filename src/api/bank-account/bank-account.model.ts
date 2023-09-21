@@ -1,17 +1,17 @@
 import mongoose, { Schema, model } from "mongoose";
-import { User as iUser } from "./user.entity";
+import { BankAccount as iBankAccount } from "./bank-account.entity";
 
-export const userSchema = new Schema<iUser>({
+export const BankAccountSchema = new Schema<iBankAccount>({
   firstName: String,
   lastName: String,
   picture: String,
 });
 
-userSchema.virtual("fullName").get(function () {
+BankAccountSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
-userSchema.set("toJSON", {
+BankAccountSchema.set("toJSON", {
   virtuals: true,
   transform: (_, ret) => {
     delete ret._id;
@@ -20,7 +20,7 @@ userSchema.set("toJSON", {
   },
 });
 
-userSchema.set("toObject", {
+BankAccountSchema.set("toObject", {
   virtuals: true,
   transform: (_, ret) => {
     delete ret._id;
@@ -29,4 +29,4 @@ userSchema.set("toObject", {
   },
 });
 
-export const User = model<iUser>("User", userSchema);
+export const BankAccount = model<iBankAccount>("User", BankAccountSchema);

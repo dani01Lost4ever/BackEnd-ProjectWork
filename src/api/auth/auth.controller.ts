@@ -2,10 +2,11 @@ import { NextFunction, Response } from "express";
 import { TypedRequest } from "../../utils/typed-request.interface";
 import { AddUserDTO, LoginDTO } from "./auth.dto";
 import { omit, pick } from "lodash";
-import { UserExistsError } from "../../errors/user-exist";
-import userService from "../users/user.service";
+import { BankAccountExistsError } from "../../errors/bank-account-exist";
 import passport from "passport";
 import * as jwt from "jsonwebtoken";
+import  BankAccountService  from "../bank-account/bank-account.service";
+
 const JWT_SECRET = "secret";
 
 export const add = async (
@@ -16,10 +17,10 @@ export const add = async (
   try {
     const userData = omit(req.body, "username", "password");
     const credentials = pick(req.body, "username", "password");
-    const newUser = await userService.add(userData, credentials);
-    res.send(newUser);
+    const newUser = await BankAccountService.add(userData, credentials);
+    res.status(201).json(newUser);
   } catch (err) {
-    if (err instanceof UserExistsError) {
+    if (err instanceof BankAccountExistsError) {
       res.status(400);
       res.send(err.message);
     } else {

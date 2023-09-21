@@ -1,7 +1,6 @@
 import { BankAccount as BankAccountModel } from "./bank-account.model";
 import { BankAccountIdentity as BankAccountIdentityModel } from "../../utils/auth/local/user-identity.model";
 import { BankAccount } from "./bank-account.entity";
-
 import * as bcrypt from "bcrypt";
 import { BankAccountExistsError } from "../../errors/bank-account-exist";
 

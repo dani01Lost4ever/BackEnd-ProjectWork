@@ -7,9 +7,6 @@ export class AddUserDTO {
   @IsString()
   lastName: string;
 
-  @IsDate()
-  date: Date;
-
   @IsUrl()
   picture: string;
 

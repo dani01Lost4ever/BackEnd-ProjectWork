@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAuthenticated } from "../../utils/auth/authenticated.middleware";
-import { list, me } from "./user.controller";
+import { list, me } from "./bank-account.controller";
 
 const router = Router();
 
