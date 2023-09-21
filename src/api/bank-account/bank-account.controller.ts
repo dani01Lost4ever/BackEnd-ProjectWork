@@ -1,11 +1,11 @@
 import { NextFunction, Response, Request } from "express";
-import UserService from "./user.service";
+import BankAccountService from "./bank-account.service";
 
 export const me = async (req: Request, res: Response, next: NextFunction) => {
   res.json(req.user!);
 };
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
-  const list = await UserService.list();
+  const list = await BankAccountService.list();
   res.json(list);
 };

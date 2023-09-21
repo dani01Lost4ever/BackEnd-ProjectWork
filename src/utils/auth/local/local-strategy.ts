@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { UserIdentity } from "./user-identity.model";
+import { BankAccountIdentity } from "./user-identity.model";
 import * as bcrypt from "bcrypt";
 
 passport.use(
@@ -13,7 +13,7 @@ passport.use(
     async (username, password, done) => {
       console.log("local strat");
       try {
-        const identity = await UserIdentity.findOne({
+        const identity = await BankAccountIdentity.findOne({
           "credentials.username": username,
         });
         if (!identity) {

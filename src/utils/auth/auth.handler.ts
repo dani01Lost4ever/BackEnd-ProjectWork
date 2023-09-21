@@ -1,9 +1,9 @@
 import "./local/local-strategy";
 import "./jwt/jwt-strategy";
-import { User as iUser } from "../../api/users/user.entity";
+import { BankAccount as iBankAccount } from "../../api/bank-account/bank-account.entity";
 
 declare global {
   namespace Express {
-    interface User extends iUser {}
+    interface BankAccount extends iBankAccount {}
   }
 }

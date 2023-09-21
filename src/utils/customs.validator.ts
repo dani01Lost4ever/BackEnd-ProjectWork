@@ -20,14 +20,14 @@
 //   }
 // }
 import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from "class-validator";
-import { User } from "../api/users/user.model";
+import { BankAccount } from "../api/bank-account/bank-account.model";
 import mongoose from "mongoose";
 
 @ValidatorConstraint({ name: "IsUserId", async: true })
 export class IsUserId implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
     if (mongoose.Types.ObjectId.isValid(value)) {
-      const todoUser = await User.findById(value);
+      const todoUser = await BankAccount.findById(value);
       if (!todoUser) {
         return false;
       }
