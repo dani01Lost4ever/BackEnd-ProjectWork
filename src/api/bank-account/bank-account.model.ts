@@ -29,4 +29,7 @@ BankAccountSchema.set("toObject", {
   },
 });
 
-export const BankAccount = model<iBankAccount>("User", BankAccountSchema);
+export const BankAccount = model<iBankAccount>(
+  "BankAccount",
+  BankAccountSchema
+);
