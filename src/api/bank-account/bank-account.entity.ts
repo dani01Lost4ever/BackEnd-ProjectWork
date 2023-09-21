@@ -4,4 +4,6 @@ export interface BankAccount {
   lastName: string;
   picture?: string;
   balance?: number;
+  date?: Date;
+  iban?: string;
 }

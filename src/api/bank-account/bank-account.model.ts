@@ -5,6 +5,9 @@ export const BankAccountSchema = new Schema<iBankAccount>({
   firstName: String,
   lastName: String,
   picture: String,
+  balance: {type: Number, default:0 },
+  date: Date,
+  iban: String,
 });
 
 BankAccountSchema.virtual("fullName").get(function () {
