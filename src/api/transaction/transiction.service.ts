@@ -47,7 +47,7 @@ export class TransictionService {
       throw new InitializeNewAccoutFailed();
     }
   }
-
+  //
   async newTransiction(transaction: Partial<transaction>) {
     console.log(transaction.bankaccountid);
     try {
