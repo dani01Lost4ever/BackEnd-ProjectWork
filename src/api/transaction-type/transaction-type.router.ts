@@ -3,5 +3,7 @@ import { isAuthenticated } from "../../utils/auth/authenticated.middleware";
 
 const router = Router();
 
-router.get("/me", isAuthenticated);
+router.use("/me", isAuthenticated);
+router.post("/")
+
 
