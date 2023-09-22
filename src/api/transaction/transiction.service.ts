@@ -39,10 +39,14 @@ export class TransictionService {
       );
 
       const newTransaction = new TransactionModel({
-        ...transaction,
+        bankaccountid: transaction.bankaccountid,
+        date: transaction.date,
+        amount: transaction.amount,
         balance: lastTransaction
           ? lastTransaction.balance! + transaction.amount!
           : transaction.amount,
+        categoryid: transaction.categoryid,
+        description: transaction.description,
       });
 
       const result = await newTransaction.save();
