@@ -1,9 +1,12 @@
 import { Router } from "express";
-import { isAuthenticated } from "../../utils/auth/authenticated.middleware";
+import { validate } from "../../utils/validation.middleware";
+import { listTransactionsType, getTransactionById } from './transaction-type.controller';
+import { QueryTransactionTypeDTO } from "./transaction-type.dto";
 
 const router = Router();
 
-router.use("/me", isAuthenticated);
-router.post("/")
+router.post('/', validate(QueryTransactionTypeDTO));
+router.get('/', validate(QueryTransactionTypeDTO, 'query'), listTransactionsType);
+router.get('/:id', getTransactionById);
 
-
+export default router;
