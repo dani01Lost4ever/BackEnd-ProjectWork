@@ -5,11 +5,13 @@ import mongoose from "mongoose";
 require("dotenv").config();
 mongoose.set("debug", true);
 mongoose
-  .connect(process.env.MONGO_DB_URI_MAURO||"")
+  .connect(
+    "mongodb+srv://danielbusettodb:goHw10CDFh03TMKo@dani01backend.pcjwsdb.mongodb.net/ApiBackend?retryWrites=true&w=majority&appName=AtlasApp"
+  )
   .then((_) => {
     console.log("Connected to db");
-    app.listen(3000, () => {
-      console.log("Server listening on port 3000");
+    app.listen(8080, () => {
+      console.log("Server listening on port 8080");
     });
   })
   .catch((err) => {
