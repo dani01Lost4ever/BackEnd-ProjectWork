@@ -1,4 +1,10 @@
-import { IsMongoId, IsNumber, IsPositive, IsString } from "class-validator";
+import {
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from "class-validator";
 
 export class TransictionDTO {
   @IsNumber()
@@ -13,4 +19,7 @@ export class TransictionDTO {
 
   @IsString()
   description: string;
+
+  @IsOptional()
+  iban: string;
 }

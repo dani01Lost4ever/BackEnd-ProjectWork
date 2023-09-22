@@ -1,19 +1,22 @@
 import mongoose, { Schema, model } from "mongoose";
-import { TransactionType as iTransactionType } from './transaction-type.entity'
+import { TransactionType as iTransactionType } from "./transaction-type.entity";
 
 export const TransactionTypeSchema = new Schema<iTransactionType>({
-    category: String,
-    typology: String,
+  id: String,
+  category: String,
+  typology: String,
+});
 
-  });
+TransactionTypeSchema.set("toJSON", {
+  virtuals: true,
+  transform: (_, ret) => {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
 
-TransactionTypeSchema.set('toJSON', {
-    virtuals: true,
-    transform: (_, ret) => {
-      delete ret._id;
-      delete ret.__v;
-      return ret;
-    }
-  });
-
-export const TransactionType = mongoose.model<iTransactionType>('TransactionType', TransactionTypeSchema)
+export const TransactionType = mongoose.model<iTransactionType>(
+  "TransactionType",
+  TransactionTypeSchema
+);

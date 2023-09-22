@@ -7,14 +7,20 @@ export const TransactionSchema = new Schema<iTransaction>({
   date: Date,
   amount: Number,
   balance: Number,
-  categoryid: String,
+  categoryid: { type: Schema.Types.ObjectId, ref: "TransactionType" },
   description: String,
+  iban: String,
 });
 
 TransactionSchema.pre("save", function (next: any) {
   if (this.isNew) {
     this.date = new Date();
   }
+  next();
+});
+
+TransactionSchema.pre("findOne", function (next) {
+  this.populate("categoryid");
   next();
 });
 
