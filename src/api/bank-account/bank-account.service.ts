@@ -1,8 +1,12 @@
 import { BankAccount as BankAccountModel } from "./bank-account.model";
-import { BankAccountIdentity as BankAccountIdentityModel } from "../../utils/auth/local/bank-account-identity.model";
+import {
+  BankAccountIdentity,
+  BankAccountIdentity as BankAccountIdentityModel,
+} from "../../utils/auth/local/bank-account-identity.model";
 import { BankAccount } from "./bank-account.entity";
 import * as bcrypt from "bcrypt";
 import { BankAccountExistsError } from "../../errors/bank-account-exist";
+import { NotFoundError } from "../../errors/not-found";
 
 export class BankAccountService {
   async add(
@@ -43,6 +47,35 @@ export class BankAccountService {
     }
 
     return iban.join("");
+  }
+
+  async update(userId: string, newPassword: string, oldPassword: string) {
+    try {
+      const identity = await BankAccountIdentity.findOne({ user: userId });
+
+      console.log(identity!.toObject().user);
+
+      const match = await bcrypt.compare(
+        oldPassword,
+        identity!.credentials.hashedPassword
+      );
+
+      if (!match) {
+        throw new NotFoundError();
+      }
+
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      identity!.credentials.hashedPassword = hashedPassword;
+      await identity!.save();
+
+      const updatedUser = await BankAccountIdentity.findOne({ user: userId });
+
+      return updatedUser;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 export default new BankAccountService();

@@ -36,3 +36,15 @@ export class LoginDTO {
   @IsString()
   password: string;
 }
+
+export class ChangePasswordDTO {
+  @IsString()
+  oldPassword: string;
+
+  @MinLength(8)
+  @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d|\W).*$/, {
+    message:
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number or special character",
+  })
+  newPassword: string;
+}
