@@ -47,7 +47,7 @@ export class TransictionService {
       throw new InitializeNewAccoutFailed();
     }
   }
-  //
+  //Memorizzare in una Tabella  l’indirizzo IP, data/ora e se l’operazione è andata a buon fine o meno.
   async newTransiction(transaction: Partial<transaction>) {
     console.log(transaction.bankaccountid);
     try {
