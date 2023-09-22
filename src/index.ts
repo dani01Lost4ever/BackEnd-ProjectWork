@@ -8,8 +8,8 @@ mongoose
   .connect(process.env.MONGO_DB_URI_MAURO||"")
   .then((_) => {
     console.log("Connected to db");
-    app.listen(8080, () => {
-      console.log("Server listening on port 8080");
+    app.listen(3000, () => {
+      console.log("Server listening on port 3000");
     });
   })
   .catch((err) => {
