@@ -24,6 +24,41 @@ export class InsufficientBalance extends Error {
   }
 }
 
+export class InitializeNewAccoutFailed extends Error {
+  constructor() {
+    super();
+    this.name = "InitializeNewAccoutFailed";
+    this.message = "Impossible to create a new accout";
+  }
+}
+
+export class BankTransactionFailed extends Error {
+  constructor() {
+    super();
+    this.name = "BankTransactionFailed";
+    this.message =
+      "Impossible to ultimate the bank transaction, try again later";
+  }
+}
+
+export class GenneralTransactionError extends Error {
+  constructor() {
+    super();
+    this.name = "GenneralTransactionError";
+    this.message =
+      "Error during the transaction, check console for more details, try again later";
+  }
+}
+
+export class BalanceCalculationError extends Error {
+  constructor() {
+    super();
+    this.name = "BalanceCalculationError";
+    this.message =
+      "Error generated while computing the new accout balance, contact support";
+  }
+}
+
 export const transactionHandler = (
   err: Error,
   req: Request,
@@ -33,7 +68,11 @@ export const transactionHandler = (
   if (
     err instanceof CategoryNotFound ||
     err instanceof InternalTypeError ||
-    err instanceof InsufficientBalance
+    err instanceof InsufficientBalance ||
+    err instanceof InitializeNewAccoutFailed ||
+    err instanceof BankTransactionFailed ||
+    err instanceof GenneralTransactionError ||
+    err instanceof BalanceCalculationError
   ) {
     res.status(400);
     res.json({

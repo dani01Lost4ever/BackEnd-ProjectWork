@@ -1,9 +1,12 @@
-import { Error } from "mongoose";
 import { TransactionType } from "../transaction-type/transaction-type.model";
 import { transaction } from "./transaction.entity";
 import { transaction as TransactionModel } from "./transiction.model";
 import {
+  BalanceCalculationError,
+  BankTransactionFailed,
   CategoryNotFound,
+  GenneralTransactionError,
+  InitializeNewAccoutFailed,
   InsufficientBalance,
   InternalTypeError,
 } from "../../errors/transaction-errors";
@@ -34,14 +37,14 @@ export class TransictionService {
       amount: 0,
       balance: 0,
       categoryid: "650e0b0568e6dd183671f36d",
-      description: "First Transaction",
+      description: "---Account Initialization---",
     });
 
     try {
       return await newTransaction.save();
     } catch (err) {
       console.error(err);
-      throw err;
+      throw new InitializeNewAccoutFailed();
     }
   }
 
@@ -52,12 +55,6 @@ export class TransictionService {
         transaction.bankaccountid!.toString()
       );
 
-      // let tempBalance;
-      // if (lastTransaction) {
-      //   tempBalance = await this.calcBalance(lastTransaction, transaction);
-      // } else {
-      //   tempBalance = 0;
-      // }
       let tempBalance = await this.calcBalance(lastTransaction, transaction);
 
       const newTransaction = new TransactionModel({
@@ -72,27 +69,34 @@ export class TransictionService {
       const result = await newTransaction.save();
 
       if (result && transaction.categoryid == "650d854dde65f59e517de0c5") {
-        const call = await this.getUserById(
-          transaction.bankaccountid?.toString() || ""
-        );
-        const userIncoming = new BankAccoutModel(call);
-        const userOutgoing = new BankAccoutModel(
-          await this.getUserByIban(transaction.iban || "") //controllare il metodo
-        );
-        if (userOutgoing) {
-          const temp = new TransactionModel({
-            bankaccountid: userOutgoing.id,
-            amount: transaction.amount,
-            categoryid: "650d851061520f73182c26ed",
-            description: "Incoming bank transaction from " + userIncoming.iban,
-          });
-          this.newTransiction(temp);
+        try {
+          const call = await this.getUserById(
+            transaction.bankaccountid?.toString() || ""
+          );
+          const userIncoming = new BankAccoutModel(call);
+          const userOutgoing = new BankAccoutModel(
+            await this.getUserByIban(transaction.iban || "")
+          );
+          if (userOutgoing) {
+            const temp = new TransactionModel({
+              bankaccountid: userOutgoing.id,
+              amount: transaction.amount,
+              categoryid: "650d851061520f73182c26ed",
+              description:
+                "Incoming bank transaction from " + userIncoming.iban,
+            });
+            this.newTransiction(temp);
+          }
+        } catch (err) {
+          console.error(err);
+          throw new BankTransactionFailed();
         }
       }
 
       return await this.getById(result._id.toString());
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      console.log(err);
+      throw new GenneralTransactionError();
     }
   }
 
@@ -136,9 +140,9 @@ export class TransictionService {
       }
 
       return lastTransaction.balance;
-    } catch (error) {
-      console.error("Errore:", error);
-      throw error;
+    } catch (err) {
+      console.error(err);
+      throw new BalanceCalculationError();
     }
   }
 }
