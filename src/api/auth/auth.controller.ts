@@ -6,6 +6,7 @@ import { BankAccountExistsError } from "../../errors/bank-account-exist";
 import passport from "passport";
 import * as jwt from "jsonwebtoken";
 import BankAccountService from "../bank-account/bank-account.service";
+import BankAccountService from "../bank-account/bank-account.service";
 
 const JWT_SECRET = "secret";
 
