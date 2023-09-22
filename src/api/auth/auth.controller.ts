@@ -5,7 +5,7 @@ import { omit, pick } from "lodash";
 import { BankAccountExistsError } from "../../errors/bank-account-exist";
 import passport from "passport";
 import * as jwt from "jsonwebtoken";
-import  BankAccountService  from "../bank-account/bank-account.service";
+import BankAccountService from "../bank-account/bank-account.service";
 
 const JWT_SECRET = "secret";
 
@@ -34,13 +34,13 @@ export const login = async (
   res: Response,
   next: NextFunction
 ) => {
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", (err, bankaccount, info) => {
     //console.log("paaport auth");
     if (err) {
       return next(err);
     }
-    if (!user) {
-      res.status(401);
+    if (!bankaccount) {
+      res.sendStatus(401);
       res.json({
         error: "LoginError",
         code: info.message,
@@ -48,10 +48,10 @@ export const login = async (
       return;
     }
     //generate token
-    const token = jwt.sign(user, JWT_SECRET, { expiresIn: "7 days" });
+    const token = jwt.sign(bankaccount, JWT_SECRET, { expiresIn: "7 days" });
     res.status(200);
     res.json({
-      user,
+      user: bankaccount,
       token,
     });
   })(req, res, next);
