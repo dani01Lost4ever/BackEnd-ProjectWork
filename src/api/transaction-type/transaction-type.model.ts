@@ -4,6 +4,7 @@ import { TransactionType as iTransactionType } from './transaction-type.entity'
 export const TransactionTypeSchema = new Schema<iTransactionType>({
     category: String,
     typology: String,
+    
   });
 
   export const TransactionTypeModel = model("TransactionType", TransactionTypeSchema);
