@@ -5,7 +5,11 @@ import TransictionService from "../transaction/transiction.service";
 export const BankAccountSchema = new Schema<iBankAccount>({
   firstName: String,
   lastName: String,
-  picture: String,
+  picture: {
+    type: String,
+    default:
+      "https://w7.pngwing.com/pngs/529/832/png-transparent-computer-icons-avatar-user-profile-avatar.png",
+  },
   date: Date,
   iban: String,
 });
