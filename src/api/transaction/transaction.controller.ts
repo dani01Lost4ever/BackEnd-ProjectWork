@@ -11,8 +11,8 @@ export const transaction = async (
 ) => {
   try {
     const user = new BankAccount(req.user!);
-    const id = user.id;
     const transaction = new TransactionModel({
+      bankaccountid: user.id,
       date: new Date(),
       amount: req.body.amount,
       categoryid: req.body.categoryid,
