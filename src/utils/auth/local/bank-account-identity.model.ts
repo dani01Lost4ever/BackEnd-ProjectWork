@@ -1,8 +1,8 @@
 import mongoose, { Schema, model } from "mongoose";
-import { BankAccountIdentity as iBankAccount } from "./user-identity.entity";
+import { BankAccountIdentity as iBankAccount } from "./bank-accout-identity.entity";
 
 export const bankAccountSchema = new mongoose.Schema<iBankAccount>({
-  user: { type: Schema.Types.ObjectId, ref: "BankAccount" },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
   provider: { type: String, default: "local" },
   credentials: {
     type: {
@@ -18,6 +18,6 @@ bankAccountSchema.pre("findOne", function (next) {
 });
 
 export const BankAccountIdentity = model<iBankAccount>(
-  "UserIdentity",
+  "BankAccountIdentity",
   bankAccountSchema
 );

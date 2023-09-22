@@ -1,5 +1,5 @@
 import { BankAccount as BankAccountModel } from "./bank-account.model";
-import { BankAccountIdentity as BankAccountIdentityModel } from "../../utils/auth/local/user-identity.model";
+import { BankAccountIdentity as BankAccountIdentityModel } from "../../utils/auth/local/bank-account-identity.model";
 import { BankAccount } from "./bank-account.entity";
 import * as bcrypt from "bcrypt";
 import { BankAccountExistsError } from "../../errors/bank-account-exist";
@@ -7,7 +7,6 @@ import { BankAccountExistsError } from "../../errors/bank-account-exist";
 export class BankAccountService {
   async add(
     user: BankAccount,
-
     credentials: { username: string; password: string }
   ): Promise<BankAccount> {
     const existingIdentity = await BankAccountIdentityModel.findOne({
@@ -39,7 +38,7 @@ export class BankAccountService {
     let iban: string[] = ["I", "T"];
     let chars: string[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 27; i++) {
       iban.push(chars[Math.floor(Math.random() * chars.length)]);
     }
 
