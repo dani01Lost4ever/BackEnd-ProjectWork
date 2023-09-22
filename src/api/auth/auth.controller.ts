@@ -16,6 +16,7 @@ export const add = async (
 ) => {
   try {
     const userData = omit(req.body, "username", "password");
+    console.log("");
     const credentials = pick(req.body, "username", "password");
     const newUser = await BankAccountService.add(userData, credentials);
     res.status(201).json(newUser);
