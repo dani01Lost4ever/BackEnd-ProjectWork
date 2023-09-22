@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { BankAccount as iBankAccount } from "./bank-account.entity";
 import { BankAccountService } from "./bank-account.service";
+import TransictionService from "../transaction/transiction.service";
 export const BankAccountSchema = new Schema<iBankAccount>({
   firstName: String,
   lastName: String,
@@ -19,6 +20,13 @@ BankAccountSchema.pre("save", function (next: any) {
 BankAccountSchema.pre("save", function (next: any) {
   if (this.isNew) {
     this.iban = BankAccountService.generateIBAN();
+  }
+  next();
+});
+
+BankAccountSchema.pre("save", function (next: any) {
+  if (this.isNew) {
+    TransictionService.newBankAccout(this.id);
   }
   next();
 });
