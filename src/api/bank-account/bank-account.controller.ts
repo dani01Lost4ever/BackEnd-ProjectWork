@@ -10,7 +10,7 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
 export const list = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = new BankAccount(req.user!);
-    if ((user.id! = "650e183d3fc6f77b6d45b657")) {
+    if ((user.id! = process.env.ADMIN_ID)) {
       throw new AdminPrivilegesRequired();
     }
     const list = await BankAccountService.list();
