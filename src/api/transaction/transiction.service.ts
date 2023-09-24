@@ -70,6 +70,7 @@ export class TransictionService {
       const result = await newTransaction.save();
 
       if (result && transaction.categoryid == "650d854dde65f59e517de0c5") {
+        //id bonifico in entrata
         try {
           const call = await this.getUserById(
             transaction.bankaccountid?.toString() || ""
@@ -82,7 +83,7 @@ export class TransictionService {
             const temp = new TransactionModel({
               bankaccountid: userOutgoing.id,
               amount: transaction.amount,
-              categoryid: "650d851061520f73182c26ed",
+              categoryid: "650d851061520f73182c26ed", //id bonifico in uscita
               description:
                 "Incoming bank transaction from " + userIncoming.iban,
             });
