@@ -41,10 +41,10 @@ export class BankTransactionFailed extends Error {
   }
 }
 
-export class GenneralTransactionError extends Error {
+export class GeneralTransactionError extends Error {
   constructor() {
     super();
-    this.name = "GenneralTransactionError";
+    this.name = "GeneralTransactionError";
     this.message =
       "Error during the transaction, check console for more details, try again later";
   }
@@ -71,7 +71,7 @@ export const transactionHandler = (
     err instanceof InsufficientBalance ||
     err instanceof InitializeNewAccoutFailed ||
     err instanceof BankTransactionFailed ||
-    err instanceof GenneralTransactionError ||
+    err instanceof GeneralTransactionError ||
     err instanceof BalanceCalculationError
   ) {
     res.status(400);
