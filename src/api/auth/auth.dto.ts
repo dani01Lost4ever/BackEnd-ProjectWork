@@ -1,4 +1,11 @@
-import { IsDate, IsEmail, IsString, IsUrl, Matches, MinLength } from "class-validator";
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  MinLength,
+} from "class-validator";
 
 export class AddUserDTO {
   @IsString()
@@ -7,6 +14,7 @@ export class AddUserDTO {
   @IsString()
   lastName: string;
 
+  @IsOptional()
   @IsUrl()
   picture: string;
 
@@ -27,4 +35,16 @@ export class LoginDTO {
 
   @IsString()
   password: string;
+}
+
+export class ChangePasswordDTO {
+  @IsString()
+  oldPassword: string;
+
+  @MinLength(8)
+  @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d|\W).*$/, {
+    message:
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number or special character",
+  })
+  newPassword: string;
 }

@@ -7,6 +7,7 @@ import { errorHandler } from "./errors";
 import { notFoundHandler } from "./errors/not-found";
 import { validationErrorHandler } from "./errors/validationError";
 import "./utils/auth/auth.handler";
+import { transactionHandler } from "./errors/transaction-errors";
 const app = express();
 
 app.use(cors());
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 app.use("/api", apiRouter);
 
 app.use(notFoundHandler);
+app.use(transactionHandler);
 app.use(validationErrorHandler);
 app.use(errorHandler);
 

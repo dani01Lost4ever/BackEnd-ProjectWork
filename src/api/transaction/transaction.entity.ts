@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { TransactionType } from "../transaction-type/transaction-type.entity";
 
 export interface transaction {
   id?: string;
@@ -6,6 +7,7 @@ export interface transaction {
   date?: Date;
   amount: number;
   balance?: number;
-  categoryid: Types.ObjectId;
+  categoryid: Types.ObjectId | string | TransactionType;
   description: string;
+  iban?: string;
 }

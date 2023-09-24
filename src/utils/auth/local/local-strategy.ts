@@ -11,7 +11,6 @@ passport.use(
       session: false,
     },
     async (username, password, done) => {
-      console.log("local strat");
       try {
         const identity = await BankAccountIdentity.findOne({
           "credentials.username": username,

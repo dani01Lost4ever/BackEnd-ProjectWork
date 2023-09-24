@@ -4,6 +4,7 @@ import { TransictionDTO } from "./transaction.dto";
 import { transaction as TransactionModel } from "./transiction.model";
 import TransictionService from "./transiction.service";
 import { BankAccount } from "../bank-account/bank-account.model";
+
 export const transaction = async (
   req: TypedRequest<TransictionDTO, any, any>,
   res: Response,
@@ -14,6 +15,7 @@ export const transaction = async (
     const transaction = new TransactionModel({
       bankaccountid: user.id,
       date: new Date(),
+      iban: req.body.iban,
       amount: req.body.amount,
       categoryid: req.body.categoryid,
       description: req.body.description,
