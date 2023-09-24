@@ -1,30 +1,52 @@
-import { Request, Response, NextFunction } from 'express';
-import { NotFoundError } from '../../errors/not-found';
-import { TypedRequest } from '../../utils/typed-request.interface';
-import TransactionTypeService from './transaction-type.service';
-import { QueryTransactionTypeDTO } from './transaction-type.dto'; 
+import { Request, Response, NextFunction } from "express";
+import { TypedRequest } from "../../utils/typed-request.interface";
+import TransactionTypeService from "./transaction-type.service";
+import { QueryTransactionTypeDTO } from "./transaction-type.dto";
+import { AdminPrivilegesRequired } from "../../errors/user-errors";
+import { BankAccount } from "../bank-account/bank-account.model";
 
-export const addTransactiontype = async (req, res, next) => {
+export const addTransactiontype = async (
+  req: TypedRequest<any, QueryTransactionTypeDTO, any>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const newTransactionTypeData = req.body; 
-
-    const createdTransactionType = await TransactionTypeService.create(newTransactionTypeData);
-
+    const user = new BankAccount(req.user!);
+    if ((user.id! = process.env.ADMIN_ID)) {
+      throw new AdminPrivilegesRequired();
+    }
+    const newTransactionTypeData = req.body;
+    const createdTransactionType = await TransactionTypeService.create(
+      newTransactionTypeData
+    );
     res.status(201).json(createdTransactionType);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
-export const listTransactionsType = async (req: TypedRequest<any, QueryTransactionTypeDTO>, res: Response, next: NextFunction) => {
-  const transactions = await TransactionTypeService.find(req.query);
-  res.json(transactions);
-}
-
-export const getTransactionById = async (req: Request, res: Response, next: NextFunction) => {
-  const transaction = await TransactionTypeService.getById(req.params.id);
-  if (!transaction) {
-    throw new NotFoundError();
+export const listTransactionsType = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const transactions = await TransactionTypeService.find();
+    res.json(transactions);
+  } catch (err) {
+    next(err);
   }
-  res.json(transaction);
-}
+};
+
+export const getTransactionById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const transaction = await TransactionTypeService.getById(req.params.id);
+    res.json(transaction);
+  } catch (err) {
+    next(err);
+  }
+};

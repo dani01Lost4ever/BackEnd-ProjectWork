@@ -1,5 +1,5 @@
-export interface TransactionType{
-    id?: string;
-    category: string;
-    typology: string;
+export interface TransactionType {
+  id?: string;
+  category: string;
+  typology: string;
 }
