@@ -10,6 +10,7 @@ export const TransactionTypeSchema = new Schema<iTransactionType>({
 TransactionTypeSchema.set("toJSON", {
   virtuals: true,
   transform: (_, ret) => {
+    ret.id = _._id;
     delete ret._id;
     delete ret.__v;
     return ret;
