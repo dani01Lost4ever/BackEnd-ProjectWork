@@ -5,7 +5,7 @@ import {
   BalanceCalculationError,
   BankTransactionFailed,
   CategoryNotFound,
-  GenneralTransactionError,
+  GeneralTransactionError,
   InitializeNewAccoutFailed,
   InsufficientBalance,
   InternalTypeError,
@@ -50,13 +50,14 @@ export class TransictionService {
   //Memorizzare in una Tabella  l’indirizzo IP, data/ora e se l’operazione è andata a buon fine o meno.
   async newTransiction(transaction: Partial<transaction>) {
     console.log(transaction.bankaccountid);
+
+    const lastTransaction = await this.getLast(
+      transaction.bankaccountid!.toString()
+    );
+
+    let tempBalance = await this.calcBalance(lastTransaction, transaction);
+
     try {
-      const lastTransaction = await this.getLast(
-        transaction.bankaccountid!.toString()
-      );
-
-      let tempBalance = await this.calcBalance(lastTransaction, transaction);
-
       const newTransaction = new TransactionModel({
         bankaccountid: transaction.bankaccountid,
         date: transaction.date,
@@ -69,6 +70,7 @@ export class TransictionService {
       const result = await newTransaction.save();
 
       if (result && transaction.categoryid == "650d854dde65f59e517de0c5") {
+        //id bonifico in entrata
         try {
           const call = await this.getUserById(
             transaction.bankaccountid?.toString() || ""
@@ -81,7 +83,7 @@ export class TransictionService {
             const temp = new TransactionModel({
               bankaccountid: userOutgoing.id,
               amount: transaction.amount,
-              categoryid: "650d851061520f73182c26ed",
+              categoryid: "650d851061520f73182c26ed", //id bonifico in uscita
               description:
                 "Incoming bank transaction from " + userIncoming.iban,
             });
@@ -96,54 +98,49 @@ export class TransictionService {
       return await this.getById(result._id.toString());
     } catch (err) {
       console.log(err);
-      throw new GenneralTransactionError();
+      throw new GeneralTransactionError();
     }
   }
 
   async calcBalance(lastTransaction, transaction): Promise<number> {
-    try {
-      const transactionDoc = await TransactionType.findById(
-        transaction.categoryid
-      );
+    const transactionDoc = await TransactionType.findById(
+      transaction.categoryid
+    );
 
-      if (!transactionDoc) {
-        throw new CategoryNotFound();
-      }
-
-      const transactionTypeId = transactionDoc._id;
-      const typo = await TransactionType.findById(transactionTypeId);
-
-      if (!typo) {
-        throw new InternalTypeError();
-      }
-
-      const typology = typo.typology;
-      if (typology == "Entrata") {
-        if (lastTransaction.balance == null) {
-          lastTransaction = { balance: transaction.amount };
-        } else {
-          lastTransaction.balance = lastTransaction
-            ? lastTransaction.balance + transaction.amount
-            : transaction.amount;
-        }
-      } else {
-        if (
-          typology == "Uscita" &&
-          lastTransaction.balance < transaction.amount
-        ) {
-          throw new InsufficientBalance();
-        } else {
-          lastTransaction.balance = lastTransaction
-            ? lastTransaction.balance - transaction.amount
-            : transaction.amount;
-        }
-      }
-
-      return lastTransaction.balance;
-    } catch (err) {
-      console.error(err);
-      throw new BalanceCalculationError();
+    if (!transactionDoc) {
+      throw new CategoryNotFound();
     }
+
+    const transactionTypeId = transactionDoc._id;
+    //typo sarebbe Entrate o Uscite
+    const typo = await TransactionType.findById(transactionTypeId);
+
+    if (!typo) {
+      throw new InternalTypeError();
+    }
+
+    const typology = typo.typology;
+    if (typology == "Entrata") {
+      if (lastTransaction.balance == null) {
+        lastTransaction = { balance: transaction.amount };
+      } else {
+        lastTransaction.balance = lastTransaction
+          ? lastTransaction.balance + transaction.amount
+          : transaction.amount;
+      }
+    } else {
+      if (
+        typology == "Uscita" &&
+        lastTransaction.balance < transaction.amount
+      ) {
+        throw new InsufficientBalance();
+      } else {
+        lastTransaction.balance = lastTransaction
+          ? lastTransaction.balance - transaction.amount
+          : transaction.amount;
+      }
+    }
+    return lastTransaction.balance;
   }
 }
 

@@ -5,9 +5,7 @@ import mongoose from "mongoose";
 require("dotenv").config();
 mongoose.set("debug", true);
 mongoose
-  .connect(
-    "mongodb+srv://danielbusettodb:goHw10CDFh03TMKo@dani01backend.pcjwsdb.mongodb.net/ApiBackend?retryWrites=true&w=majority&appName=AtlasApp"
-  )
+  .connect(process.env.MONGO_DB_URI || "")
   .then((_) => {
     console.log("Connected to db");
     app.listen(8080, () => {

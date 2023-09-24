@@ -14,9 +14,6 @@ export class TransictionDTO {
   @IsMongoId()
   categoryid: string;
 
-  // @IsMongoId()
-  // bankaccoutid: string;
-
   @IsString()
   description: string;
 

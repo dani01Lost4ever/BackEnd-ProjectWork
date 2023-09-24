@@ -5,5 +5,6 @@ import { list, me } from "./bank-account.controller";
 const router = Router();
 
 router.get("/me", isAuthenticated, me);
+
 router.get("/", isAuthenticated, list);
 export default router;

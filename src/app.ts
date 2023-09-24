@@ -8,6 +8,7 @@ import { notFoundHandler } from "./errors/not-found";
 import { validationErrorHandler } from "./errors/validationError";
 import "./utils/auth/auth.handler";
 import { transactionHandler } from "./errors/transaction-errors";
+import { userHandler } from "./errors/user-errors";
 const app = express();
 
 app.use(cors());
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 
 app.use("/api", apiRouter);
 
+app.use(userHandler);
 app.use(notFoundHandler);
 app.use(transactionHandler);
 app.use(validationErrorHandler);
