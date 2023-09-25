@@ -9,8 +9,7 @@ import BankAccountService from "../bank-account/bank-account.service";
 import { BankAccount } from "../bank-account/bank-account.model";
 import { NotFoundError } from "../../errors/not-found";
 
-const JWT_SECRET = "secret";
-
+//const JWT_SECRET = "secret";
 export const add = async (
   req: TypedRequest<AddUserDTO>,
   res: Response,
@@ -51,7 +50,9 @@ export const login = async (
       return;
     }
     //generate token
-    const token = jwt.sign(bankaccount, JWT_SECRET, { expiresIn: "7 days" });
+    const token = jwt.sign(bankaccount, process.env.JWT_SECRET || "", {
+      expiresIn: "7 days",
+    });
     res.status(200);
     res.json({
       user: bankaccount,
