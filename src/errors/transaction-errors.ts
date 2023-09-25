@@ -59,6 +59,14 @@ export class BalanceCalculationError extends Error {
   }
 }
 
+export class IBANNotFound extends Error {
+  constructor() {
+    super();
+    this.name = "IBANNotFound";
+    this.message = "Your IBAN does not exist";
+  }
+}
+
 export const transactionHandler = (
   err: Error,
   req: Request,

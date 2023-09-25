@@ -1,6 +1,8 @@
+import { Type } from "class-transformer";
 import {
   IsMongoId,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsPositive,
   IsString,
@@ -19,4 +21,9 @@ export class TransictionDTO {
 
   @IsOptional()
   iban: string;
+}
+
+export class getLastTransacDTO {
+  @IsNumberString()
+  num: number;
 }
