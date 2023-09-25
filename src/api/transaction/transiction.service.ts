@@ -6,6 +6,7 @@ import {
   BankTransactionFailed,
   CategoryNotFound,
   GeneralTransactionError,
+  IBANNotFound,
   InitializeNewAccoutFailed,
   InsufficientBalance,
   InternalTypeError,
@@ -141,6 +142,35 @@ export class TransictionService {
       }
     }
     return lastTransaction.balance;
+  }
+
+  async getTransactions(bankaccountId: string, limit: number) {
+    try {
+      if (bankaccountId == null || bankaccountId == undefined) {
+        throw new IBANNotFound();
+      }
+      const transactions = await TransactionModel.find({
+        bankaccountid: bankaccountId,
+      })
+        .sort({ date: -1 })
+        .limit(limit)
+        .select("-balance")
+        .select("-bankaccountid")
+        .populate("categoryid", "category typology")
+        .exec();
+
+      const accountBalance = await TransactionModel.find({
+        bankaccountid: bankaccountId,
+      })
+        .sort({ date: -1 })
+        .limit(1)
+        .select("balance");
+
+      return { accountBalance, transactions };
+    } catch (err) {
+      console.error(err);
+      throw new GeneralTransactionError();
+    }
   }
 }
 
