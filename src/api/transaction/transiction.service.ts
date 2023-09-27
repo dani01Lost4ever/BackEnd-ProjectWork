@@ -10,6 +10,7 @@ import {
   InitializeNewAccoutFailed,
   InsufficientBalance,
   InternalTypeError,
+  InvalidPhoneCredit,
 } from "../../errors/transaction-errors";
 import { BankAccount } from "../bank-account/bank-account.entity";
 import { BankAccount as BankAccoutModel } from "../bank-account/bank-account.model";
@@ -56,6 +57,12 @@ export class TransictionService {
       transaction.bankaccountid!.toString()
     );
 
+    if(transaction.categoryid == "650d866cff8d876d587ff46a" ){
+      if(transaction.amount != 5 && transaction.amount != 10 && transaction.amount != 20 && transaction.amount != 50 && transaction.amount != 100){
+        throw new InvalidPhoneCredit();
+      }
+    }
+
     let tempBalance = await this.calcBalance(lastTransaction, transaction);
 
     try {
@@ -95,6 +102,8 @@ export class TransictionService {
           throw new BankTransactionFailed();
         }
       }
+
+      
 
       return await this.getById(result._id.toString());
     } catch (err) {
