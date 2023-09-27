@@ -257,7 +257,7 @@ export class TransictionService {
         })
           .sort({ date: -1 })
           .limit(limit)
-          .select("-balance")
+          // .select("-balance")
           .select("-bankaccountid")
           .populate("categoryid", "category typology")
           .exec();
