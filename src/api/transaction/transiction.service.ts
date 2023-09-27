@@ -159,14 +159,9 @@ export class TransictionService {
         .populate("categoryid", "category typology")
         .exec();
 
-      const accountBalance = await TransactionModel.find({
-        bankaccountid: bankaccountId,
-      })
-        .sort({ date: -1 })
-        .limit(1)
-        .select("balance");
+      
 
-      return { accountBalance, transactions };
+      return { transactions };
     } catch (err) {
       console.error(err);
       throw new GeneralTransactionError();

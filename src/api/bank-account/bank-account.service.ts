@@ -7,6 +7,8 @@ import { BankAccount } from "./bank-account.entity";
 import * as bcrypt from "bcrypt";
 import { BankAccountExistsError } from "../../errors/bank-account-exist";
 import { NotFoundError } from "../../errors/not-found";
+import { transaction as TransactionModel } from "../transaction/transiction.model";
+import { BalanceCalculationError } from "../../errors/transaction-errors";
 
 export class BankAccountService {
   async add(
@@ -75,6 +77,20 @@ export class BankAccountService {
       return updatedUser;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async accountBalance(bankaccountId: string) {
+    try {
+      const accout = await TransactionModel.find({
+        bankaccountid: bankaccountId,
+      })
+        .sort({ date: -1 })
+        .limit(1)
+        .select("balance");
+      return { accout: accout };
+    } catch (error) {
+      throw new BalanceCalculationError();
     }
   }
 }
