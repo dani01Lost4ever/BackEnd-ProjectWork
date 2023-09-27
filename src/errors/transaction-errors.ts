@@ -67,6 +67,14 @@ export class IBANNotFound extends Error {
   }
 }
 
+export class InvalidPhoneCredit extends Error {
+  constructor() {
+    super();
+    this.name = "InvalidPhoneCredit";
+    this.message = "The choosen amount is invalid";
+  }
+}
+
 export const transactionHandler = (
   err: Error,
   req: Request,
@@ -80,7 +88,8 @@ export const transactionHandler = (
     err instanceof InitializeNewAccoutFailed ||
     err instanceof BankTransactionFailed ||
     err instanceof GeneralTransactionError ||
-    err instanceof BalanceCalculationError
+    err instanceof BalanceCalculationError ||
+    err instanceof InvalidPhoneCredit
   ) {
     res.status(400);
     res.json({
