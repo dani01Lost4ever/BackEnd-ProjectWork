@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { isAuthenticated } from "../../utils/auth/authenticated.middleware";
-import { list, me } from "./bank-account.controller";
+import { getBalance, list, me } from "./bank-account.controller";
 
 const router = Router();
-
-router.get("/me", isAuthenticated, me);
-
-router.get("/", isAuthenticated, list);
+router.use(isAuthenticated);
+router.get("/me", me);
+router.get("/", list);
+router.get("/balance", getBalance);
 export default router;
