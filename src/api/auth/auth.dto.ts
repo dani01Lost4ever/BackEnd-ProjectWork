@@ -27,6 +27,13 @@ export class AddUserDTO {
       "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number or special character",
   })
   password: string;
+
+  @MinLength(8)
+  @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d|\W).*$/, {
+    message:
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number or special character",
+  })
+  confermaPassword: string;
 }
 
 export class LoginDTO {

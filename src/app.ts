@@ -9,6 +9,8 @@ import { validationErrorHandler } from "./errors/validationError";
 import "./utils/auth/auth.handler";
 import { transactionHandler } from "./errors/transaction-errors";
 import { userHandler } from "./errors/user-errors";
+import { transactionResearchHandler } from "./errors/transactionResearch-error";
+import { bankAccountHandler } from "./errors/bank-account-exist";
 const app = express();
 
 app.use(cors());
@@ -17,8 +19,10 @@ app.use(bodyParser.json());
 
 app.use("/api", apiRouter);
 
+app.use(transactionResearchHandler);
 app.use(userHandler);
 app.use(notFoundHandler);
+app.use(bankAccountHandler);
 app.use(transactionHandler);
 app.use(validationErrorHandler);
 app.use(errorHandler);
