@@ -8,6 +8,6 @@ const router = Router();
 
 router.use(isAuthenticated);
 router.post("/", validate(TransictionDTO, "body"), transaction);
-router.get("/:num", validate(getLastTransacDTO, "params"), getTransactions);
+router.get("/research", validate(getLastTransacDTO, "query"), getTransactions);
 
 export default router;

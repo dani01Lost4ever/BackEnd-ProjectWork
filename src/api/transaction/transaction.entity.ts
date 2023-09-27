@@ -7,7 +7,7 @@ export interface transaction {
   date?: Date;
   amount: number;
   balance?: number;
-  categoryid: Types.ObjectId | string | TransactionType;
+  categoryid?: Types.ObjectId;
   description: string;
   iban?: string;
 }
