@@ -7,7 +7,7 @@ import { BankAccount } from "./bank-account.entity";
 import * as bcrypt from "bcrypt";
 import { BankAccountExistsError } from "../../errors/bank-account-exist";
 import { NotFoundError } from "../../errors/not-found";
-import { transaction as TransactionModel } from "../transaction/transiction.model";
+import { transaction as TransactionModel } from "../transaction/transaction.model";
 import { BalanceCalculationError } from "../../errors/transaction-errors";
 
 export class BankAccountService {
