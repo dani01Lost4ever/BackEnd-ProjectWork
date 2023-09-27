@@ -2,7 +2,6 @@ import { TransactionType } from "../transaction-type/transaction-type.model";
 import { transaction } from "./transaction.entity";
 import { transaction as TransactionModel } from "./transiction.model";
 import {
-  BalanceCalculationError,
   BankTransactionFailed,
   CategoryNotFound,
   GeneralTransactionError,
@@ -144,7 +143,13 @@ export class TransictionService {
     return lastTransaction.balance;
   }
 
-  async getTransactions(bankaccountId: string, limit: number) {
+  async getTransactions(
+    bankaccountId: string,
+    limit: number = 5,
+    categoryId?: string,
+    startDate?: Date,
+    endDate?: Date
+  ) {
     try {
       if (bankaccountId == null || bankaccountId == undefined) {
         throw new IBANNotFound();
@@ -158,8 +163,6 @@ export class TransictionService {
         .select("-bankaccountid")
         .populate("categoryid", "category typology")
         .exec();
-
-      
 
       return { transactions };
     } catch (err) {
