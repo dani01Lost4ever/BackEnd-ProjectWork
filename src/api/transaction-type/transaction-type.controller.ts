@@ -12,7 +12,7 @@ export const addTransactiontype = async (
 ) => {
   try {
     const user = new BankAccount(req.user!);
-    if ((user.id! = process.env.ADMIN_ID)) {
+    if (user.id != process.env.ADMIN_ID) {
       throw new AdminPrivilegesRequired();
     }
     const newTransactionTypeData = req.body;
