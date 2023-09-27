@@ -1,8 +1,8 @@
+require("dotenv").config();
 import "reflect-metadata";
 import app from "./app";
 import mongoose from "mongoose";
 
-require("dotenv").config();
 mongoose.set("debug", true);
 mongoose
   .connect(process.env.MONGO_DB_URI || "")
