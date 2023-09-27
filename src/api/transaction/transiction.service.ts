@@ -1,6 +1,6 @@
 import { TransactionType } from "../transaction-type/transaction-type.model";
 import { transaction } from "./transaction.entity";
-import { transaction as TransactionModel } from "./transiction.model";
+import { transaction as TransactionModel } from "./transaction.model";
 import {
   BankTransactionFailed,
   CategoryNotFound,
@@ -56,8 +56,14 @@ export class TransictionService {
       transaction.bankaccountid!.toString()
     );
 
-    if(transaction.categoryid == "650d866cff8d876d587ff46a" ){
-      if(transaction.amount != 5 && transaction.amount != 10 && transaction.amount != 20 && transaction.amount != 50 && transaction.amount != 100){
+    if (transaction.categoryid?.toString() == "650d866cff8d876d587ff46a") {
+      if (
+        transaction.amount != 5 &&
+        transaction.amount != 10 &&
+        transaction.amount != 20 &&
+        transaction.amount != 50 &&
+        transaction.amount != 100
+      ) {
         throw new InvalidPhoneCredit();
       }
     }
@@ -70,13 +76,16 @@ export class TransictionService {
         date: transaction.date,
         amount: transaction.amount,
         balance: tempBalance,
-        categoryid: transaction.categoryid,
+        categoryid: transaction.categoryid?.toString(),
         description: transaction.description,
       });
 
       const result = await newTransaction.save();
 
-      if (result && transaction.categoryid == "650d854dde65f59e517de0c5") {
+      if (
+        result &&
+        transaction.categoryid?.toString() == "650d854dde65f59e517de0c5"
+      ) {
         //id bonifico in entrata
         try {
           const call = await this.getUserById(
@@ -101,8 +110,6 @@ export class TransictionService {
           throw new BankTransactionFailed();
         }
       }
-
-      
 
       return await this.getById(result._id.toString());
     } catch (err) {
@@ -152,6 +159,36 @@ export class TransictionService {
     return lastTransaction.balance;
   }
 
+  // async getTransactions(
+  //   bankAccount: string,
+  //   query: QueryTransactionDTO
+  // ): Promise<transaction[]> {
+  //   const q: FilterQuery<transaction> = {
+  //     bankAccount: bankAccount,
+  //   };
+
+  //   if (query.type) {
+  //     q.transactionType = query.type;
+  //   }
+
+  //   if (query.startDate !== undefined || query.endDate !== undefined) {
+  //     q.createdAt = {};
+  //   }
+
+  //   if (query.startDate) {
+  //     q.createdAt["$gte"] = new Date(query.startDate);
+  //   }
+
+  //   if (query.endDate) {
+  //     q.createdAt["$lte"] = new Date(query.endDate);
+  //   }
+
+  //   const list = await TransactionModel.find(q)
+  //     .limit(query.number || 0)
+  //     .sort({ createdAt: -1 })
+  //     .populate("transactionType");
+  //   return list;
+  // }
   async getTransactions(
     bankaccountId: string,
     limit: number = 5,
@@ -163,17 +200,70 @@ export class TransictionService {
       if (bankaccountId == null || bankaccountId == undefined) {
         throw new IBANNotFound();
       }
-      const transactions = await TransactionModel.find({
-        bankaccountid: bankaccountId,
-      })
-        .sort({ date: -1 })
-        .limit(limit)
-        .select("-balance")
-        .select("-bankaccountid")
-        .populate("categoryid", "category typology")
-        .exec();
+      if (
+        categoryId != undefined &&
+        startDate == undefined &&
+        endDate == undefined
+      ) {
+        const transactions = await TransactionModel.find({
+          categoryid: categoryId,
+          bankaccountid: bankaccountId,
+        })
+          .sort({ date: -1 })
+          .limit(limit)
+          .select("-balance")
+          .select("-bankaccountid")
+          .populate("categoryid", "category typology")
+          .exec();
+        return { transactions };
+      } else if (
+        categoryId == undefined &&
+        startDate != undefined &&
+        endDate != undefined
+      ) {
+        const transactions = await TransactionModel.find({
+          bankaccountid: bankaccountId,
+          date: { $gte: new Date(startDate), $lt: new Date(endDate) },
+        })
 
-      return { transactions };
+          .sort({ date: -1 })
+          .limit(limit)
+          .select("-balance")
+          .select("-bankaccountid")
+          .populate("categoryid", "category typology")
+          .exec();
+        return { transactions };
+      } else if (
+        categoryId != undefined &&
+        startDate != undefined &&
+        endDate != undefined
+      ) {
+        const transactions = await TransactionModel.find({
+          bankaccountid: bankaccountId,
+          date: { $gte: new Date(startDate), $lt: new Date(endDate) },
+          categoryid: categoryId,
+        })
+          .sort({ date: -1 })
+          .limit(limit)
+          .select("-balance")
+          .select("-bankaccountid")
+          .populate("categoryid", "category typology")
+          .exec();
+        return { transactions };
+      } else {
+        // throw new NoTransactionsFound();
+        const transactions = await TransactionModel.find({
+          bankaccountid: bankaccountId,
+        })
+          .sort({ date: -1 })
+          .limit(limit)
+          .select("-balance")
+          .select("-bankaccountid")
+          .populate("categoryid", "category typology")
+          .exec();
+
+        return { transactions };
+      }
     } catch (err) {
       console.error(err);
       throw new GeneralTransactionError();
