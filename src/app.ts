@@ -13,6 +13,7 @@ import { transactionResearchHandler } from "./errors/transactionResearch-error";
 import { bankAccountHandler } from "./errors/bank-account-exist";
 const app = express();
 
+app.set('trust proxy', true);
 app.use(cors());
 app.use(morgan("tiny"));
 app.use(bodyParser.json());
