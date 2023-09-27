@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { TypedRequest } from "../../utils/typed-request.interface";
 import { AddUserDTO, ChangePasswordDTO, LoginDTO } from "./auth.dto";
 import { omit, pick } from "lodash";
-import { BankAccountExistsError } from "../../errors/bank-account-exist";
+import LogService from "../log/log.service";
 import passport from "passport";
 import * as jwt from "jsonwebtoken";
 import BankAccountService from "../bank-account/bank-account.service";
@@ -41,6 +41,11 @@ export const login = async (
       return next(err);
     }
     if (!bankaccount) {
+      LogService.newLog(
+        req.ip,
+        new Date(),
+        `Failed attempt to login by ${bankaccount?.username}`
+      );
       res.sendStatus(401);
       res.json({
         error: "LoginError",
