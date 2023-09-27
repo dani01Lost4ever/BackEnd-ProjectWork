@@ -2,7 +2,6 @@ import { NextFunction, Response, Request } from "express";
 import BankAccountService from "./bank-account.service";
 import { BankAccount } from "./bank-account.model";
 import { AdminPrivilegesRequired } from "../../errors/user-errors";
-import { TypedRequest } from "../../utils/typed-request.interface";
 import bankAccountService from "./bank-account.service";
 
 export const me = async (req: Request, res: Response, next: NextFunction) => {
