@@ -16,17 +16,17 @@ export const add = async (
   next: NextFunction
 ) => {
   try {
-    const userData = omit(req.body, "username", "password");
-    const credentials = pick(req.body, "username", "password");
+    const userData = omit(req.body, "username", "password", "confermaPassword");
+    const credentials = pick(
+      req.body,
+      "username",
+      "password",
+      "confermaPassword"
+    );
     const newUser = await BankAccountService.add(userData, credentials);
     res.status(201).json(newUser);
   } catch (err) {
-    if (err instanceof BankAccountExistsError) {
-      res.status(400);
-      res.send(err.message);
-    } else {
-      next(err);
-    }
+    next(err);
   }
 };
 
