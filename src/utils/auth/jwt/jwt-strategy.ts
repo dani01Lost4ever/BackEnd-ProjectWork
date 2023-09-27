@@ -2,13 +2,11 @@ import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { BankAccount as BankAccountModel } from "../../../api/bank-account/bank-account.model";
 
-export const JWT_SECRET = "secret";
-
 passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: JWT_SECRET,
+      secretOrKey: process.env.JWT_SECRET,
     },
     async (token, done) => {
       try {
