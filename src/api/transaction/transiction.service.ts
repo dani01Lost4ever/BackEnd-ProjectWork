@@ -27,8 +27,10 @@ export class TransictionService {
   async getUserById(id: string): Promise<BankAccount | null> {
     return await BankAccoutModel.findById(id);
   }
-  async getUserByIban(iban: string): Promise<BankAccount | null> {
-    return await BankAccoutModel.findOne({ iban: iban });
+  async getUserByIban(iban: string | undefined): Promise<BankAccount | null> {
+    const result = await BankAccoutModel.findOne({ iban: iban });
+    if (result != null) return result;
+    else throw new IBANNotFound();
   }
 
   async newBankAccout(id: string) {
@@ -50,11 +52,21 @@ export class TransictionService {
   }
   //Memorizzare in una Tabella  l’indirizzo IP, data/ora e se l’operazione è andata a buon fine o meno.
   async newTransiction(transaction: Partial<transaction>) {
+    let lastTransaction;
+    let userOutgoing;
     console.log(transaction.bankaccountid);
 
-    const lastTransaction = await this.getLast(
-      transaction.bankaccountid!.toString()
-    );
+    try {
+      lastTransaction = await this.getLast(
+        transaction.bankaccountid!.toString()
+      );
+      userOutgoing = new BankAccoutModel(
+        await this.getUserByIban(transaction.iban)
+      );
+    } catch (err) {
+      console.error(err);
+      throw new GeneralTransactionError();
+    }
 
     if (transaction.categoryid?.toString() == "650d866cff8d876d587ff46a") {
       if (
@@ -92,9 +104,6 @@ export class TransictionService {
             transaction.bankaccountid?.toString() || ""
           );
           const userIncoming = new BankAccoutModel(call);
-          const userOutgoing = new BankAccoutModel(
-            await this.getUserByIban(transaction.iban || "")
-          );
           if (userOutgoing) {
             const temp = new TransactionModel({
               bankaccountid: userOutgoing.id,
@@ -137,7 +146,7 @@ export class TransictionService {
 
     const typology = typo.typology;
     if (typology == "Entrata") {
-      if (lastTransaction.balance == null) {
+      if (lastTransaction?.balance == null) {
         lastTransaction = { balance: transaction.amount };
       } else {
         lastTransaction.balance = lastTransaction
@@ -159,36 +168,6 @@ export class TransictionService {
     return lastTransaction.balance;
   }
 
-  // async getTransactions(
-  //   bankAccount: string,
-  //   query: QueryTransactionDTO
-  // ): Promise<transaction[]> {
-  //   const q: FilterQuery<transaction> = {
-  //     bankAccount: bankAccount,
-  //   };
-
-  //   if (query.type) {
-  //     q.transactionType = query.type;
-  //   }
-
-  //   if (query.startDate !== undefined || query.endDate !== undefined) {
-  //     q.createdAt = {};
-  //   }
-
-  //   if (query.startDate) {
-  //     q.createdAt["$gte"] = new Date(query.startDate);
-  //   }
-
-  //   if (query.endDate) {
-  //     q.createdAt["$lte"] = new Date(query.endDate);
-  //   }
-
-  //   const list = await TransactionModel.find(q)
-  //     .limit(query.number || 0)
-  //     .sort({ createdAt: -1 })
-  //     .populate("transactionType");
-  //   return list;
-  // }
   async getTransactions(
     bankaccountId: string,
     limit: number = 5,
