@@ -89,7 +89,8 @@ export const transactionHandler = (
     err instanceof BankTransactionFailed ||
     err instanceof GeneralTransactionError ||
     err instanceof BalanceCalculationError ||
-    err instanceof InvalidPhoneCredit
+    err instanceof InvalidPhoneCredit ||
+    err instanceof IBANNotFound
   ) {
     res.status(400);
     res.json({
