@@ -4,14 +4,15 @@ import { TransictionDTO, getLastTransacDTO } from "./transaction.dto";
 import { transaction as TransactionModel } from "./transaction.model";
 import TransictionService from "./transiction.service";
 import { BankAccount } from "../bank-account/bank-account.model";
+import  LogService  from "../log/log.service";
 
 export const transaction = async (
   req: TypedRequest<TransictionDTO, any, any>,
   res: Response,
   next: NextFunction
 ) => {
+  const user = new BankAccount(req.user!);
   try {
-    const user = new BankAccount(req.user!);
     const transaction = new TransactionModel({
       bankaccountid: user.id,
       date: new Date(),
@@ -23,8 +24,18 @@ export const transaction = async (
     const transactionCompleted = await TransictionService.newTransiction(
       transaction
     );
+    LogService.newLog(
+      req.ip,
+      new Date(),
+      `Transaction done successfully by ${user.id}`
+    );
     res.json(transactionCompleted);
   } catch (err: any) {
+    LogService.newLog(
+      req.ip,
+      new Date(),
+      `${err.message} by ${user.id}`
+    );
     next(err);
   }
 };
