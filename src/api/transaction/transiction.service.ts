@@ -58,10 +58,6 @@ export class TransictionService {
     lastTransaction = await this.getLast(transaction.bankaccountid!.toString());
     userOutgoing = await this.getUserByIban(transaction.iban);
 
-    if (userOutgoing == null) {
-      throw new IBANNotFound();
-    }
-
     if (transaction.categoryid?.toString() == "650d866cff8d876d587ff46a") {
       if (
         transaction.amount != 5 &&
@@ -92,6 +88,9 @@ export class TransictionService {
         result &&
         transaction.categoryid?.toString() == "650d854dde65f59e517de0c5"
       ) {
+        if (userOutgoing == null) {
+          throw new IBANNotFound();
+        }
         //id bonifico in entrata
         try {
           const call = await this.getUserById(
