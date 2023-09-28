@@ -29,8 +29,7 @@ export class TransictionService {
   }
   async getUserByIban(iban: string | undefined): Promise<BankAccount | null> {
     const result = await BankAccoutModel.findOne({ iban: iban });
-    if (result != null) return result;
-    else throw new IBANNotFound();
+    return result;
   }
 
   async newBankAccout(id: string) {
@@ -56,16 +55,11 @@ export class TransictionService {
     let userOutgoing;
     console.log(transaction.bankaccountid);
 
-    try {
-      lastTransaction = await this.getLast(
-        transaction.bankaccountid!.toString()
-      );
-      userOutgoing = new BankAccoutModel(
-        await this.getUserByIban(transaction.iban)
-      );
-    } catch (err) {
-      console.error(err);
-      throw new GeneralTransactionError();
+    lastTransaction = await this.getLast(transaction.bankaccountid!.toString());
+    userOutgoing = await this.getUserByIban(transaction.iban);
+
+    if (userOutgoing == null) {
+      throw new IBANNotFound();
     }
 
     if (transaction.categoryid?.toString() == "650d866cff8d876d587ff46a") {
