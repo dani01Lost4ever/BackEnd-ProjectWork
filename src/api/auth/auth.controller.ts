@@ -24,8 +24,18 @@ export const add = async (
       "confermaPassword"
     );
     const newUser = await BankAccountService.add(userData, credentials);
+    LogService.newLog(
+      req.ip,
+      new Date(),
+      `Registration successfull ${credentials.username}`
+    );
     res.status(201).json(newUser);
-  } catch (err) {
+  } catch (err:any) {
+    LogService.newLog(
+      req.ip,
+      new Date(),
+      `Registration Error: ${err.message}`
+    );
     next(err);
   }
 };
@@ -44,7 +54,7 @@ export const login = async (
       LogService.newLog(
         req.ip,
         new Date(),
-        `Failed attempt to login by ${bankaccount?.username}`
+        `Failed attempt to login by ${req.body.username}`
       );
       res.sendStatus(401);
       res.json({
@@ -53,15 +63,20 @@ export const login = async (
       });
       return;
     }
-    //generate token
-    const token = jwt.sign(bankaccount, process.env.JWT_SECRET || "", {
-      expiresIn: "7 days",
-    });
-    res.status(200);
-    res.json({
-      user: bankaccount,
-      token,
-    });
+      LogService.newLog(
+        req.ip,
+        new Date(),
+        `Login Successful by ${req.body.username}`
+      );
+      //generate token
+      const token = jwt.sign(bankaccount, process.env.JWT_SECRET || "", {
+        expiresIn: "7 days",
+      });
+      res.status(200);
+      res.json({
+        user: bankaccount,
+        token,
+      });
   })(req, res, next);
 };
 
@@ -81,6 +96,11 @@ export const changePassword = async (
         error: "PasswordValidationError",
         message: "New password must be different from the last one",
       });
+      LogService.newLog(
+        req.ip,
+        new Date(),
+        `Password change failed by ${user.id}`
+      );
       return;
     }
     if (!req.user) {
@@ -92,13 +112,22 @@ export const changePassword = async (
       newPassword,
       oldPassword
     );
-
+    LogService.newLog(
+      req.ip,
+      new Date(),
+      `Password changed successfully by ${user.id}`
+    );
     res.status(200);
     res.json({
       modifiedUser,
       message: "Password changed",
     });
-  } catch (err) {
+  } catch (err:any) {
+    LogService.newLog(
+      req.ip,
+      new Date(),
+      `Change password Error: ${err.message}`
+    );
     if (err instanceof NotFoundError) {
       res.status(401);
       res.send(err.message);
